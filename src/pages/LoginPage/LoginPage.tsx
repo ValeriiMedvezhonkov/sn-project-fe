@@ -22,17 +22,18 @@ import { Icons } from '@/components/icons';
 import { loginUserSchema } from '@/validation-schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 type FormLoginValues = z.infer<typeof loginUserSchema>;
 
 const LoginPage = () => {
    const navigate = useNavigate();
+   const { state } = useLocation();
 
    const form = useForm<FormLoginValues>({
       defaultValues: {
-         email: '',
-         password: '',
+         email: state?.email || '',
+         password: state?.password || '',
       },
       resolver: zodResolver(loginUserSchema),
    });
@@ -82,7 +83,7 @@ const LoginPage = () => {
                            <FormItem>
                               <FormLabel>Email</FormLabel>
                               <FormControl>
-                                 <Input placeholder="Email" {...field} />
+                                 <Input error={form.formState.errors.email?.message} placeholder="Email" {...field} />
                               </FormControl>
                               {form.formState.errors.email?.message && (
                                  <FormError>{form.formState.errors.email?.message}</FormError>
@@ -102,7 +103,7 @@ const LoginPage = () => {
                            <FormItem>
                               <FormLabel>Password</FormLabel>
                               <FormControl>
-                                 <Input placeholder="Password" type="password" {...field} />
+                                 <Input error={form.formState.errors.password?.message} placeholder="Password" type="password" {...field} />
                               </FormControl>
                               {form.formState.errors.password?.message && (
                                  <FormError>{form.formState.errors.password?.message}</FormError>

@@ -22,17 +22,18 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { registerUserSchema } from '@/validation-schemas';
 import { Icons } from '@/components/icons';
 import { z } from 'zod';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 type FormRegisterValues = z.infer<typeof registerUserSchema>;
 
 const RegisterPage = () => {
    const navigate = useNavigate();
+   const { state } = useLocation();
 
    const form = useForm<FormRegisterValues>({
       defaultValues: {
-         email: '',
-         password: '',
+         email: state?.email || '',
+         password: state?.password || '',
          confirmPassword: '',
       },
       resolver: zodResolver(registerUserSchema),
@@ -83,7 +84,7 @@ const RegisterPage = () => {
                            <FormItem>
                               <FormLabel>Email</FormLabel>
                               <FormControl>
-                                 <Input placeholder="Email" {...field} />
+                                 <Input error={form.formState.errors.email?.message} placeholder="Email" {...field} />
                               </FormControl>
                               {form.formState.errors.email?.message && (
                                  <FormError>{form.formState.errors.email?.message}</FormError>
@@ -103,7 +104,7 @@ const RegisterPage = () => {
                            <FormItem>
                               <FormLabel>Password</FormLabel>
                               <FormControl>
-                                 <Input placeholder="Password" type="password" {...field} />
+                                 <Input error={form.formState.errors.password?.message} placeholder="Password" type="password" {...field} />
                               </FormControl>
                               {form.formState.errors.password?.message && (
                                  <FormError>{form.formState.errors.password?.message}</FormError>
@@ -123,7 +124,7 @@ const RegisterPage = () => {
                            <FormItem>
                               <FormLabel>Confirm password</FormLabel>
                               <FormControl>
-                                 <Input placeholder="Confirm password" type="password" {...field} />
+                                 <Input error={form.formState.errors.confirmPassword?.message} placeholder="Confirm password" type="password" {...field} />
                               </FormControl>
                               {form.formState.errors.confirmPassword?.message && (
                                  <FormError>
